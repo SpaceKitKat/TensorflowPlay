@@ -16,6 +16,7 @@ class LinearModel:
 	w = None
 	x = None
 	b = None
+	isInitialized = False
 	def __init__(self, weight, bias):
 		print("--->Creating linear model")
 		# Use float type to conserve memory
@@ -25,6 +26,7 @@ class LinearModel:
 
 		# Initialize variables
 		Session.run(tf.global_variables_initializer())
+		self.isInitialized = True
 		print("--->Created and initialized model.")
 
 	def TrainLinearModel(self, costFunc, data):
@@ -33,13 +35,20 @@ class LinearModel:
 
 	def RunLinearModel(self, arrInputs):
 		print("--->Running linear model")
+		# Ensure model and inputs are valid before running
+		if (len(arrInputs) < 1):
+			print("Insufficient inputs; length must be greater than 1.")
+			raise Exception
+		if (not self.isInitialized):
+			print("Model is uninitialized...")
+			raise Exception
+
 		linearModel = self.w * self.x + self.b
 		print(Session.run(linearModel, { self.x: arrInputs }))
-		return None
 
 def main():
 	print("<<< Start main >>>\n")
-	
+
 	identityLinearModel = LinearModel(1, 0)
 	identityLinearModel.RunLinearModel([0, 2, 3, 5, 7])
 
